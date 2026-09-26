@@ -31,7 +31,7 @@ body {
 
 @media (max-width: 768px) {
     #content {
-        grid-template-columns: repeat(2, minmax(8rem, 1fr));
+        grid-template-columns: repeat(2, minmax(100px, 1fr));
     }
 
     .woman {
