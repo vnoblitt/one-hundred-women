@@ -1,2 +1,2 @@
 # restaurant-page
-Practicing DOM manipulation by dynamically rendering a restaurant homepage.
+QTCinderella's Name 100 Women Challenge
