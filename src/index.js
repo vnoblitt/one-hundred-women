@@ -1,6 +1,7 @@
 // src/index.js
 import "./styles.css";
 import unlockSoundFile from './woman_unlocked.mp3';
+import deletedSoundFile from './women_deleted.mp3';
 
 console.log('hello?');
 const content = document.getElementById('content');
@@ -26,6 +27,7 @@ counter.textContent = womenLeft;
 timerInterval = setInterval(updateTimer, 100);
 
 const unlockSound = new Audio(unlockSoundFile);
+const deleteSound = new Audio(deletedSoundFile);
 
 submitButton.addEventListener('click', () => {
     addWoman(inputBox.value);
@@ -41,6 +43,7 @@ resetButton.addEventListener('click', () => {
     elapsedTime = 0;
     womenLeft = 100;
     counter.textContent = womenLeft;
+    deleteSound.play();
 });
 
 window.addEventListener('keydown', (event) => {
