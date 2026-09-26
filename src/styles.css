@@ -28,3 +28,13 @@ body {
     align-items: center;
     justify-content: center;
 }
+
+@media (max-width: 768px) {
+    #content {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .woman {
+        width: 100%;
+    }
+}
