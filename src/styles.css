@@ -15,8 +15,9 @@ body {
     grid-template-columns: repeat(10, 10rem);
 }
 
-#below-content {
+#info {
     display: flex;
+    flex-direction: row;
     gap: 1rem;
 }
 
