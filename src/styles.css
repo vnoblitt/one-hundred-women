@@ -42,10 +42,17 @@ body {
 
 @media (max-width: 768px) {
     #content {
-        grid-template-columns: repeat(4, minmax(8rem, 1fr));
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        width: 100%;
     }
 
     .woman {
         width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+        font-size: 0.7rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 }
