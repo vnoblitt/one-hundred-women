@@ -12,7 +12,7 @@ body {
 
 #content {
     display: grid;
-    grid-template-columns: repeat(10, 10rem);
+    grid-template-columns: repeat(5, 10rem);
 }
 
 #info {
@@ -30,9 +30,19 @@ body {
     justify-content: center;
 }
 
+.not-famous {
+    border: 2px solid red;
+    padding: 10px;
+}
+
+.famous {
+    border: 2px solid green;
+    padding: 10px;
+}
+
 @media (max-width: 768px) {
     #content {
-        grid-template-columns: repeat(2, minmax(8rem, 1fr));
+        grid-template-columns: repeat(4, minmax(8rem, 1fr));
     }
 
     .woman {

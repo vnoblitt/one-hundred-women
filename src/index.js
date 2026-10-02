@@ -2,6 +2,8 @@
 import "./styles.css";
 import unlockSoundFile from './woman_unlocked.mp3';
 import deletedSoundFile from './women_deleted.mp3';
+import rejectSoundFile from './woman_rejected.mp3';
+import { verifyWoman } from "./verify.js";
 
 console.log('hello?');
 const content = document.getElementById('content');
@@ -14,6 +16,12 @@ const resetButton = document.getElementById('reset');
 const counter = document.getElementById('counter');
 
 inputDiv.append(inputBox, submitButton);
+
+const womanViewer = document.getElementById("viewer");
+const womanP = document.createElement("p");
+womanP.innerHTML = "Name a woman.";
+womanViewer.append(womanP);
+
 let arr = []
 arr = makeGrid(content);
 let currentIndex = 0;
@@ -28,16 +36,17 @@ timerInterval = setInterval(updateTimer, 100);
 
 const unlockSound = new Audio(unlockSoundFile);
 const deleteSound = new Audio(deletedSoundFile);
+const rejectSound = new Audio(rejectSoundFile);
 
 submitButton.addEventListener('click', () => {
     addWoman(inputBox.value);
     inputBox.value = '';
-    unlockSound.play();
+    
 });
 
 resetButton.addEventListener('click', () => {
     content.innerHTML = '';
-    makeGrid(content);
+    arr = makeGrid(content);
     currentIndex = 0;
     startTime = Date.now();
     elapsedTime = 0;
@@ -50,7 +59,6 @@ window.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
         addWoman(inputBox.value);
         inputBox.value = '';
-        unlockSound.play();
     }
 });
 
@@ -61,6 +69,7 @@ function updateTimer() {
 }
 
 function formatTime(ms) {
+    
     let totalSeconds = Math.floor(ms / 1000);
     let totalMinutes = Math.floor(totalSeconds / 60);
     let totalHours = Math.floor(totalMinutes / 60);
@@ -71,7 +80,7 @@ function formatTime(ms) {
 
     let hoursStr = String(displayHours).padStart(2, '0');
     let minsStr = String(displayMins).padStart(2, '0');
-    let secsStr = String(displaySecs).padStart(2, '0');
+    let secsStr = String(displaySecs).padStart(2, '0'); 
 
     return `${hoursStr}:${minsStr}:${secsStr}`;
 }
@@ -95,12 +104,40 @@ function makeGrid(content) {
     return arr;
 }
 
-function addWoman(name) {
-    const targetWoman = arr.find(woman => woman.id === `woman${currentIndex}`);
-    targetWoman.name = name;
-    const targetDiv = document.getElementById(`woman${currentIndex}`);
-    targetDiv.textContent = name;
-    currentIndex++;
-    womenLeft--;
-    counter.textContent = womenLeft;
+function showWoman(woman, fame) {
+    womanViewer.innerHTML = "";
+    womanP.textContent = `${woman.name}, Fame Score: ${fame}`;
+    if (fame < 10) {
+        womanP.classList.remove("famous");
+        womanP.classList.add("not-famous");
+    } else {
+        womanP.classList.remove("not-famous");
+        womanP.classList.add("famous");
+    }
+    womanViewer.append(womanP);
+}
+
+async function addWoman(name) {
+    if(!name.trim()) return;
+    const potentialWoman = await verifyWoman(name);
+    console.log(potentialWoman);
+    if (potentialWoman === null) return rejectSound.play();
+    else if (potentialWoman.sitelinks < 10) {
+         showWoman(potentialWoman, potentialWoman.sitelinks);    
+         return rejectSound.play();
+    } else {
+        if (arr.find(woman => woman.name === potentialWoman.name)) {
+            return rejectSound.play();
+        } else {
+            showWoman(potentialWoman, potentialWoman.sitelinks);
+            const targetWoman = arr.find(woman => woman.id === `woman${currentIndex}`);
+            targetWoman.name = potentialWoman.name;
+            const targetDiv = document.getElementById(`woman${currentIndex}`);
+            targetDiv.textContent = potentialWoman.name;
+            currentIndex++;
+            womenLeft--;
+            counter.textContent = womenLeft;
+            unlockSound.play();
+        }
+    }
 }
