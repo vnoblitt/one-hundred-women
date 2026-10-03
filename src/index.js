@@ -3,9 +3,11 @@ import "./styles.css";
 import unlockSoundFile from './woman_unlocked.mp3';
 import deletedSoundFile from './women_deleted.mp3';
 import rejectSoundFile from './woman_rejected.mp3';
+import victorySoundFile from './victory.mp3';
 import { verifyWoman } from "./verify.js";
 
 console.log('hello?');
+let gameOver = false;
 const content = document.getElementById('content');
 const inputDiv = document.getElementById('input-div');
 const inputBox = document.createElement('input');
@@ -33,10 +35,12 @@ let womenLeft = 100;
 counter.textContent = womenLeft;
 
 timerInterval = setInterval(updateTimer, 100);
+inputBox.focus();
 
 const unlockSound = new Audio(unlockSoundFile);
 const deleteSound = new Audio(deletedSoundFile);
 const rejectSound = new Audio(rejectSoundFile);
+const victorySound = new Audio(victorySoundFile);
 
 submitButton.addEventListener('click', () => {
     addWoman(inputBox.value);
@@ -117,7 +121,20 @@ function showWoman(woman, fame) {
     womanViewer.append(womanP);
 }
 
+function endGame() {
+    setTimeout(() => {
+        victorySound.play();
+    }, 1000);
+
+    womanViewer.innerHTML = "";
+    womanP.textContent = "You win!";
+    womanViewer.append(womanP);
+    
+    gameOver = true;
+}
+
 async function addWoman(name) {
+    if(gameOver) return;
     if(!name.trim()) return;
     const potentialWoman = await verifyWoman(name);
     console.log(potentialWoman);
@@ -136,6 +153,9 @@ async function addWoman(name) {
             targetDiv.textContent = potentialWoman.name;
             currentIndex++;
             womenLeft--;
+            if(womenLeft === 0) {
+                endGame();
+            }
             counter.textContent = womenLeft;
             unlockSound.play();
         }
